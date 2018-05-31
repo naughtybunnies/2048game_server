@@ -1,5 +1,5 @@
 from mpi4py import MPI
-from shared_folder import datastructure
+from shared_folder.src import datastructure
 import numpy
 import sys
 import socket
@@ -16,6 +16,7 @@ def deSerializeState(size,listBoard):
 
 
 def main():
+    HOST = ''                 # Symbolic name meaning all available interfaces
     PORT = 50007              # Arbitrary non-privileged port
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT)),nn
