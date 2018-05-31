@@ -30,6 +30,9 @@ class board:
             self.boardMatrix[int(rand2/size)][int(rand2%size)] = 4
         else:
             self.boardMatrix[int(rand2/size)][int(rand2%size)] = 2
+    def printBoard(listBoard):
+        for row in listBoard:
+            print(row)
 
     def moveLeft(self, test=0):
         ## feed each row into queue
@@ -46,7 +49,7 @@ class board:
             return 0
         else:
             if(not test):
-                print(newboard)
+                printBoard(newboard)
                 return newboard
                 '''
                 self.boardMatrix = newboard
@@ -79,12 +82,14 @@ class board:
             return 0
         else:
             if(not test):
+                printBoard(newboard)
                 return newboard
                 '''
                 self.boardMatrix = newboard
                 self.updateScore()
                 return self.addtile()
                 '''
+
     def moveUp(self, test=0):
         ## takang then move left
         newboard = []
@@ -99,9 +104,13 @@ class board:
             return 0
         else:
             if(not test):
+                printBoard(newboard)
+                return(newboard)
+                '''
                 self.boardMatrix = newboard
                 self.updateScore()
                 return self.addtile()
+                '''
 
     def moveDown(self, test=0):
         newboard = []
@@ -120,9 +129,13 @@ class board:
             return 0
         else:
             if(not test):
+                printBoard(newboard)
+                return(newboard)
+                '''
                 self.boardMatrix = newboard
                 self.updateScore()
                 return self.addtile()
+                '''
 
     def updateScore(self):
         score = 0

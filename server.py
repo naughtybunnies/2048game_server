@@ -16,15 +16,26 @@ def deSerializeState(size,strBoard):
         rows.append(row)
     return rows
 
+def moveBoardUp(board):
+    board.moveUp()
+
 def moveBoardLeft(board):
     board.moveLeft()
+
+def moveBoardDown(board):
+    board.moveDown()
+
+def moveBoardRight(board):
+    board.moveRight()
+
 
 def main():
     HOST = ''                 # Symbolic name meaning all available interfaces
     PORT = 50007              # Arbitrary non-privileged port
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
-    moves =[moveBoardLeft]
+    moves =[moveBoardUp, moveBoardLeft, moveBoardDown, moveBoardRight]
+
     while 1 :
         s.listen()
         conn, addr = s.accept()
@@ -35,7 +46,7 @@ def main():
                 if not data: break
                 data = data.decode()
                 data = data.split(',') # data[0] is board size, data[1] is board data
-                size = data[0]
+                size = int(data[0])
                 strData = data[1]
                 listBoard = deSerializeState(size, strData)
                 gameBoard = game2048(listBoard)
