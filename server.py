@@ -1,5 +1,5 @@
 from mpi4py import MPI
-from src import game2048.*
+from src import game2048
 
 import numpy
 import sys
@@ -49,15 +49,17 @@ def main():
                 size = int(data[0])
                 strData = data[1]
                 listBoard = deSerializeState(size, strData)
-                gameBoard = board(size, listBoard)
+                gameBoard = game2048.board(size, listBoard)
                 for move in moves:
                     move(gameBoard)
 
                 #print(board)
                 #data = data + "go UP"
                 #data = bytes("Welcome to my chat server", encoding='utf-8')
-                conn.sendall(data)
-                conn.close()
+                try :
+                    conn.sendall(data)
+                finally:
+                    conn.close()
 if __name__ == "__main__" :
     main()
 
