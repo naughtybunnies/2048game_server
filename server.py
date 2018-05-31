@@ -49,7 +49,7 @@ def main():
                 size = int(data[0])
                 strData = data[1]
                 listBoard = deSerializeState(size, strData)
-                gameBoard = game2048(listBoard)
+                gameBoard = game2048(size, listBoard)
                 for move in moves:
                     move(gameBoard)
 
