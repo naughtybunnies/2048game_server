@@ -1,5 +1,5 @@
 from mpi4py import MPI
-from shared_folder.src import game2048
+from src import game2048
 
 import numpy
 import sys
