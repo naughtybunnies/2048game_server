@@ -7,9 +7,11 @@ class board:
     p4 = 0.1
     score = 0
 
-    def __init__(self, size, p4 = 0.1, listMatrix):
+   def __init__(self, size, listMatrix, p4 = 0.1):
         self.size = size
-        self.score = 0
+        #self.initBoardMatrix(size)
+       self.score = 0
+        self.baordMatrix = listMatrix
 
     def moveLeft(self, test=0):
         ## feed each row into queue
@@ -26,9 +28,12 @@ class board:
             return 0
         else:
             if(not test):
+                return newboard
+                '''
                 self.boardMatrix = newboard
                 self.updateScore()
                 return self.addtile()
+                '''
 
     def moveRight(self, test=0):
         ## feed each row into queue
@@ -55,10 +60,12 @@ class board:
             return 0
         else:
             if(not test):
+                return newboard
+                '''
                 self.boardMatrix = newboard
                 self.updateScore()
                 return self.addtile()
-
+                '''
     def moveUp(self, test=0):
         ## takang then move left
         newboard = []
