@@ -50,6 +50,7 @@ def main():
                 strData = data[1]
                 listBoard = deSerializeState(size, strData)
                 gameBoard = game2048.board(size, listBoard)
+                gameBoard.getBoard()
                 for move in moves:
                     move(gameBoard)
 
@@ -60,6 +61,7 @@ def main():
                     conn.sendall(data)
                 finally:
                     conn.close()
+
 if __name__ == "__main__" :
     main()
 

@@ -30,6 +30,7 @@ class board:
             self.boardMatrix[int(rand2/size)][int(rand2%size)] = 4
         else:
             self.boardMatrix[int(rand2/size)][int(rand2%size)] = 2
+
     def printBoard(listBoard):
         for row in listBoard:
             print(row)
@@ -63,7 +64,6 @@ class board:
         ## do fill
         newboard = []
         tempmatrix = [[0 for i in range(len(self.boardMatrix))] for j in range(len(self.boardMatrix))]
-        print("boardmatrix before: "+str(self.boardMatrix))
         for i in range(len(self.boardMatrix)):
             for j in range(len(self.boardMatrix)):
                 tempmatrix[i][j] = self.boardMatrix[i][j]
@@ -74,9 +74,7 @@ class board:
             line = line.compress()
             line.reverse()
             newboard.append(line)
-        print("boardmatrix after:  "+str(self.boardMatrix))
-        print("tempmatrix after:   "+str(tempmatrix))
-        print("newboard :          "+str(newboard))
+
         if(self.checkBoardEqual(self.boardMatrix, newboard)):
             print("hit border")
             return 0
@@ -112,7 +110,7 @@ class board:
                 return self.addtile()
                 '''
 
-    def moveDown(self, test=0):
+def moveDown(self, test=0):
         newboard = []
         takangboard = [[self.boardMatrix[i][j] for i in range(len(self.boardMatrix))] for j in range(len(self.boardMatrix))]
         for line in takangboard:
@@ -124,8 +122,7 @@ class board:
         newboard = [[newboard[i][j] for i in range(len(self.boardMatrix))] for j in range(len(self.boardMatrix))]
 
         if(self.checkBoardEqual(self.boardMatrix, newboard)):
-            ## the board is the same
-            print("Hit border")
+            print("hit border")
             return 0
         else:
             if(not test):
@@ -184,8 +181,6 @@ class board:
                 if(board1[i][j] != board2[i][j]):
                     return 0
         return 1
-
-
 
     def __repr__(self):
         string = ""
