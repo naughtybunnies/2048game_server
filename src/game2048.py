@@ -1,4 +1,3 @@
-import random
 import math
 from src import datastructure
 
@@ -8,27 +7,9 @@ class board:
     p4 = 0.1
     score = 0
 
-    def __init__(self, size, p4 = 0.1):
+    def __init__(self, size, p4 = 0.1, listMatrix):
         self.size = size
-        self.initBoardMatrix(size)
         self.score = 0
-
-    def initBoardMatrix(self, size):
-        self.boardMatrix = [[0 for i in range(size)] for j in range(size)]
-        rand1 = 0
-        rand2 = 0
-        while(rand1 == rand2):
-            rand1 = random.randint(0, size*size - 1)
-            rand2 = random.randint(0, size*size - 1)
-        if(random.random() <= self.p4):
-            self.boardMatrix[int(rand1/size)][int(rand1%size)] = 4
-        else:
-            self.boardMatrix[int(rand1/size)][int(rand1%size)] = 2
-
-        if(random.random() <= self.p4):
-            self.boardMatrix[int(rand2/size)][int(rand2%size)] = 4
-        else:
-            self.boardMatrix[int(rand2/size)][int(rand2%size)] = 2
 
     def moveLeft(self, test=0):
         ## feed each row into queue
