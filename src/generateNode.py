@@ -84,6 +84,8 @@ def linearPlay(possibilityTree):
     return bestLeaf
 
 def genNodeController(board, funcArray):
+    funcs = funcArray
+
     state1 = createState(board)
     layer1 = genNodeChildren(state1)
     layer2 = []

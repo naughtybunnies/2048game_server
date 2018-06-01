@@ -24,25 +24,25 @@ def printBoard(board):
         print(row)
     print()
 
-def moveBoardUp(board):
-    print("MOVE UP")
+def moveup(board):
+    #print("MOVE UP")
     newBoard = board.moveUp()
     #printBoard(newBoard)
     return newBoard
 
-def moveBoardLeft(board):
-    print("MOVE LEFT")
+def moveleft(board):
+    #print("MOVE LEFT")
     newBoard = board.moveLeft()
     #printBoard(newBoard)
     return newBoard
 
-def moveBoardDown(board):
+def movedown(board):
     print("MOVE DOWN")
     newBoard = board.moveDown()
     #printBoard(newBoard)
     return newBoard
 
-def moveBoardRight(board):
+def moveright(board):
     print("MOVE RIGHT")
     newBoard = board.moveRight()
     #printBoard(newBoard)
@@ -92,7 +92,7 @@ if __name__ == "__main__" :
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
 
-    moves = [moveBoardLeft, moveBoardRight, moveBoardUp, moveBoardDown]
+    moves = [[moveleft,'l'], [moveright,'r'], [moveup,'u'], [movedown,'d']]
 
     main()
 
