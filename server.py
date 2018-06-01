@@ -171,9 +171,8 @@ def main():
                 strData = data[1]
                 listBoard = deSerializeState(size, strData)
                 #print(listBoard)
-                gameBoard = game2048.board(size, listBoard)
                 #gameBoard.getBoard()
-                generateNode.genNodeController(gameBoard, moves)
+                generateNode.genNodeController(listBoard, moves)
 
                 #print(board)
                 #data = data + "go UP"
