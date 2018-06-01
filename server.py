@@ -23,7 +23,7 @@ def printBoard(board):
     for row in board:
         print(row)
     print()
-
+'''
 def moveup(board):
     #print("MOVE UP")
     newBoard = board.moveUp()
@@ -47,6 +47,104 @@ def moveright(board):
     newBoard = board.moveRight()
     #printBoard(newBoard)
     return newBoard
+'''
+def moveleft(board):
+    newboard = []
+    for line in board :
+        line = datastructure.queue(line)
+        line = line.compress()
+        newboard.append(line)
+
+    if(checkBoardEqual(board, newboard)):
+        print("hit border")
+        return 0
+    else:
+        printBoard(newboard)
+        return newboard
+        '''
+        self.boardMatrix = newboard
+        self.updateScore()
+        return self.addtile()
+        '''
+
+def moveright(board):
+    newboard = []
+    tempmatrix = [[0 for i in range(len(board))] for j in range(len(board))]
+    for i in range(len(board)):
+        for j in range(len(board)):
+            tempmatrix[i][j] = board[i][j]
+
+    for line in tempmatrix:
+        line.reverse()
+        line = datastructure.queue(line)
+        line = line.compress()
+        line.reverse()
+        newboard.append(line)
+
+    if(checkBoardEqual(board, newboard)):
+        print("hit border")
+        return 0
+    else:
+        printBoard(newboard)
+        return newboard
+        '''
+        self.boardMatrix = newboard
+        self.updateScore()
+        return self.addtile()
+        '''
+
+def moveup(board):
+    ## takang then move left
+    newboard = []
+    takangboard = [[board[i][j] for i in range(len(board))] for j in range(len(board))]
+    for line in takangboard:
+        line = datastructure.queue(line)
+        line = line.compress()
+        newboard.append(line)
+    newboard = [[newboard[i][j] for i in range(len(board))] for j in range(len(board))]
+    if(checkBoardEqual(board, newboard)):
+        print("hit border")
+        return 0
+    else:
+        printBoard(newboard)
+        return(newboard)
+        '''
+        self.boardMatrix = newboard
+        self.updateScore()
+        return self.addtile()
+        '''
+
+def movedown(board):
+    newboard = []
+    takangboard = [[board[i][j] for i in range(len(board))] for j in range(len(board))]
+    for line in takangboard:
+        line.reverse()
+        line = datastructure.queue(line)
+        line = line.compress()
+        line.reverse()
+        newboard.append(line)
+    newboard = [[newboard[i][j] for i in range(len(board))] for j in range(len(board))]
+
+    if(checkBoardEqual(board, newboard)):
+        print("hit border")
+        return 0
+    else:
+        printBoard(newboard)
+        return(newboard)
+        '''
+        self.boardMatrix = newboard
+        self.updateScore()
+        return self.addtile()
+        '''
+
+def checkBoardEqual( board1, board2):
+        for i in range(len(board1)):
+            for j in range(len(board2)):
+                if(board1[i][j] != board2[i][j]):
+                    return 0
+        return 1
+
+
 
 def fillBoard(board, num, actions):
     print("FILL NUMBER ",num)
