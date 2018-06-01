@@ -23,31 +23,6 @@ def printBoard(board):
     for row in board:
         print(row)
     print()
-'''
-def moveup(board):
-    #print("MOVE UP")
-    newBoard = board.moveUp()
-    #printBoard(newBoard)
-    return newBoard
-
-def moveleft(board):
-    #print("MOVE LEFT")
-    newBoard = board.moveLeft()
-    #printBoard(newBoard)
-    return newBoard
-
-def movedown(board):
-    print("MOVE DOWN")
-    newBoard = board.moveDown()
-    #printBoard(newBoard)
-    return newBoard
-
-def moveright(board):
-    print("MOVE RIGHT")
-    newBoard = board.moveRight()
-    #printBoard(newBoard)
-    return newBoard
-'''
 def moveleft(board):
     newboard = []
     for line in board :
@@ -56,10 +31,9 @@ def moveleft(board):
         newboard.append(line)
 
     if(checkBoardEqual(board, newboard)):
-        print("hit border")
         pass
     else:
-        printBoard(newboard)
+        #printBoard(newboard)
         return newboard
         '''
         self.boardMatrix = newboard
@@ -82,10 +56,9 @@ def moveright(board):
         newboard.append(line)
 
     if(checkBoardEqual(board, newboard)):
-        print("hit border")
         pass
     else:
-        printBoard(newboard)
+        #printBoard(newboard)
         return newboard
         '''
         self.boardMatrix = newboard
@@ -103,10 +76,9 @@ def moveup(board):
         newboard.append(line)
     newboard = [[newboard[i][j] for i in range(len(board))] for j in range(len(board))]
     if(checkBoardEqual(board, newboard)):
-        print("hit border")
         pass
     else:
-        printBoard(newboard)
+        #printBoard(newboard)
         return(newboard)
         '''
         self.boardMatrix = newboard
@@ -126,10 +98,9 @@ def movedown(board):
     newboard = [[newboard[i][j] for i in range(len(board))] for j in range(len(board))]
 
     if(checkBoardEqual(board, newboard)):
-        print("hit border")
         pass
     else:
-        printBoard(newboard)
+        #printBoard(newboard)
         return(newboard)
         '''
         self.boardMatrix = newboard
@@ -156,7 +127,7 @@ def fillBoard(board, num, actions):
                 printBoard(filledBoard)
 
 def main():
-
+    moves = [[moveleft,'l'], [moveright,'r'], [moveup,'u'], [movedown,'d']]
     while 1 :
         s.listen()
         conn, addr = s.accept()
@@ -172,10 +143,10 @@ def main():
                 listBoard = deSerializeState(size, strData)
                 #print(listBoard)
                 #gameBoard.getBoard()
-                generateNode.genNodeController(listBoard, moves)
+                nodes = generateNode.genNodeController(listBoard, moves)
 
-                #print(board)
-                #data = data + "go UP"
+                # Scatter data to slaves
+
                 #data = bytes("Welcome to my chat server", encoding='utf-8')
                 try :
                     conn.sendall(data)
@@ -183,14 +154,13 @@ def main():
                     conn.close()
 
 if __name__ == "__main__" :
-
+    # Socket Communication
     HOST = ''                 # Symbolic name meaning all available interfaces
     PORT = 50007              # Arbitrary non-privileged port
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
-
-    moves = [[moveleft,'l'], [moveright,'r'], [moveup,'u'], [movedown,'d']]
-
+    # MPI Communication
+    comm =  MPI.COMM_SELF.Spawn(sys.executable, args=['py_slave.py'], maxprocs=5)
     main()
 
 '''
