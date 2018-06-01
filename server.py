@@ -1,6 +1,7 @@
 from mpi4py import MPI
 from src import game2048
 from src import datastructure
+from src import generateNode
 
 import numpy
 import sys
@@ -22,28 +23,31 @@ def printBoard(board):
     for row in board:
         print(row)
     print()
-    
+
 def moveBoardUp(board):
     print("MOVE UP")
     newBoard = board.moveUp()
-    printBoard(newBoard)
+    #printBoard(newBoard)
+    return newBoard
 
 def moveBoardLeft(board):
     print("MOVE LEFT")
     newBoard = board.moveLeft()
-    printBoard(newBoard)
-    
+    #printBoard(newBoard)
+    return newBoard
+
 def moveBoardDown(board):
     print("MOVE DOWN")
     newBoard = board.moveDown()
-    printBoard(newBoard)
-    
+    #printBoard(newBoard)
+    return newBoard
 
 def moveBoardRight(board):
     print("MOVE RIGHT")
     newBoard = board.moveRight()
-    printBoard(newBoard)
- 
+    #printBoard(newBoard)
+    return newBoard
+
 def fillBoard(board, num, actions):
     print("FILL NUMBER ",num)
     for i,row in enumerate(board):
@@ -54,11 +58,6 @@ def fillBoard(board, num, actions):
                 printBoard(filledBoard)
 
 def main():
-    HOST = ''                 # Symbolic name meaning all available interfaces
-    PORT = 50007              # Arbitrary non-privileged port
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((HOST, PORT))
-    moves =[moveBoardUp, moveBoardLeft, moveBoardDown, moveBoardRight]
 
     while 1 :
         s.listen()
@@ -76,8 +75,7 @@ def main():
                 #print(listBoard)
                 gameBoard = game2048.board(size, listBoard)
                 #gameBoard.getBoard()
-                for move in moves:
-                    move(gameBoard)
+                generateNode.genNodeController(gameBoard, moves)
 
                 #print(board)
                 #data = data + "go UP"
@@ -88,6 +86,14 @@ def main():
                     conn.close()
 
 if __name__ == "__main__" :
+
+    HOST = ''                 # Symbolic name meaning all available interfaces
+    PORT = 50007              # Arbitrary non-privileged port
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((HOST, PORT))
+
+    moves = [moveBoardLeft, moveBoardRight, moveBoardUp, moveBoardDown]
+
     main()
 
 '''
