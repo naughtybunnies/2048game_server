@@ -1,5 +1,5 @@
+from src import evaluation
 import copy
-import evaluation
 
 ## adapter : call move functions
 def moveleft(state):
