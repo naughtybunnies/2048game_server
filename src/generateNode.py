@@ -28,7 +28,7 @@ def genNodeChildren(instate):
 def genDirectionLayer(instate):
     stack = []
     layer = instate[0].index(0)
-
+'''
     newstate = copy.deepcopy(instate)
     newstate[0][layer] = 'l'
     newstate[1] = newstate[1].moveLeft()
@@ -48,7 +48,7 @@ def genDirectionLayer(instate):
     newstate[0][layer] = 'd'
     newstate[1] = newstate[1].moveDown()
     stack.append(newstate)
-    '''
+'''
     for func in funcs:
         newstate = copy.deepcopy(instate)
         newstate[0][layer] = func[1]
