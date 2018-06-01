@@ -21,7 +21,7 @@ def genNodeChildren(instate):
     node_children = []
 
     for direction in node_directionLayer:
-        print(direction)
+        #print(direction)
         node_children += genAllChild(direction)
 
     ## return complete tree for 1 node

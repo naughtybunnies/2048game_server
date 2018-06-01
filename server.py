@@ -145,23 +145,48 @@ def main():
                 #gameBoard.getBoard()
                 nodes = generateNode.genNodeController(listBoard, moves)
 
-                # Scatter data to slaves
-
+                #print(board)
+                #data = data + "go UP"
                 #data = bytes("Welcome to my chat server", encoding='utf-8')
                 try :
                     conn.sendall(data)
                 finally:
                     conn.close()
+#########################################################################################################
 
+comm = MPI.COMM_WORLD
+size = comm.Get_size()
+rank = comm.Get_rank()
+
+if rank == 0:
+    print("SIZE: ",size)
+    # Socket Communication
+    HOST = ''                 # Symbolic name meaning all available interfaces
+    PORT = 50007              # Arbitrary non-privileged port
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((HOST, PORT))
+    main()
+'''
+if rank == 0:
+    data = [(i+1)**2 for i in range(size)]
+else:
+    data = None
+data = comm.scatter(data, root=0)
+assert data == (rank+1)**2
+
+print("RANK: ", rank)
+print("DATA: ", data)
+'''
+
+'''
 if __name__ == "__main__" :
     # Socket Communication
     HOST = ''                 # Symbolic name meaning all available interfaces
     PORT = 50007              # Arbitrary non-privileged port
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
-    # MPI Communication
-    comm =  MPI.COMM_SELF.Spawn(sys.executable, args=['py_slave.py'], maxprocs=5)
     main()
+'''
 
 '''
     comm =  MPI.COMM_SELF.Spawn(
