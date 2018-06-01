@@ -10,9 +10,8 @@ class board:
 
     def __init__(self, size, listMatrix, p4 = 0.1):
         self.size = size
-        #self.initBoardMatrix(size)
         self.score = 0
-        self.baordMatrix = listMatrix
+        self.boardMatrix = listMatrix
 
     def initBoardMatrix(self, size):
         self.boardMatrix = [[0 for i in range(size)] for j in range(size)]
@@ -31,10 +30,6 @@ class board:
         else:
             self.boardMatrix[int(rand2/size)][int(rand2%size)] = 2
 
-    def printBoard(listBoard):
-        for row in listBoard:
-            print(row)
-
     def moveLeft(self, test=0):
         ## feed each row into queue
         ## do compress
@@ -50,7 +45,6 @@ class board:
             return 0
         else:
             if(not test):
-                printBoard(newboard)
                 return newboard
                 '''
                 self.boardMatrix = newboard
@@ -80,7 +74,6 @@ class board:
             return 0
         else:
             if(not test):
-                printBoard(newboard)
                 return newboard
                 '''
                 self.boardMatrix = newboard
@@ -102,7 +95,6 @@ class board:
             return 0
         else:
             if(not test):
-                printBoard(newboard)
                 return(newboard)
                 '''
                 self.boardMatrix = newboard
@@ -110,7 +102,7 @@ class board:
                 return self.addtile()
                 '''
 
-def moveDown(self, test=0):
+    def moveDown(self, test=0):
         newboard = []
         takangboard = [[self.boardMatrix[i][j] for i in range(len(self.boardMatrix))] for j in range(len(self.boardMatrix))]
         for line in takangboard:
@@ -126,7 +118,6 @@ def moveDown(self, test=0):
             return 0
         else:
             if(not test):
-                printBoard(newboard)
                 return(newboard)
                 '''
                 self.boardMatrix = newboard

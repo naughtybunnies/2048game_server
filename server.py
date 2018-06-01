@@ -1,9 +1,11 @@
 from mpi4py import MPI
 from src import game2048
+from src import datastructure
 
 import numpy
 import sys
 import socket
+import copy
 
 def deSerializeState(size,strBoard):
     listBoard = strBoard.split(" ")
@@ -16,18 +18,40 @@ def deSerializeState(size,strBoard):
         rows.append(row)
     return rows
 
+def printBoard(board):
+    for row in board:
+        print(row)
+    print()
+    
 def moveBoardUp(board):
-    board.moveUp()
+    print("MOVE UP")
+    newBoard = board.moveUp()
+    printBoard(newBoard)
 
 def moveBoardLeft(board):
-    board.moveLeft()
-
+    print("MOVE LEFT")
+    newBoard = board.moveLeft()
+    printBoard(newBoard)
+    
 def moveBoardDown(board):
-    board.moveDown()
+    print("MOVE DOWN")
+    newBoard = board.moveDown()
+    printBoard(newBoard)
+    
 
 def moveBoardRight(board):
-    board.moveRight()
-
+    print("MOVE RIGHT")
+    newBoard = board.moveRight()
+    printBoard(newBoard)
+ 
+def fillBoard(board, num, actions):
+    print("FILL NUMBER ",num)
+    for i,row in enumerate(board):
+        for j,col in enumerate(row):
+            if col == 0:
+                filledBoard = copy.deepcopy(board)
+                filledBoard[i][j] = num
+                printBoard(filledBoard)
 
 def main():
     HOST = ''                 # Symbolic name meaning all available interfaces
@@ -49,8 +73,9 @@ def main():
                 size = int(data[0])
                 strData = data[1]
                 listBoard = deSerializeState(size, strData)
+                #print(listBoard)
                 gameBoard = game2048.board(size, listBoard)
-                gameBoard.getBoard()
+                #gameBoard.getBoard()
                 for move in moves:
                     move(gameBoard)
 
