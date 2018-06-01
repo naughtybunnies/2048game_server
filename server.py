@@ -57,7 +57,7 @@ def moveleft(board):
 
     if(checkBoardEqual(board, newboard)):
         print("hit border")
-        return 0
+        pass
     else:
         printBoard(newboard)
         return newboard
@@ -83,7 +83,7 @@ def moveright(board):
 
     if(checkBoardEqual(board, newboard)):
         print("hit border")
-        return 0
+        pass
     else:
         printBoard(newboard)
         return newboard
@@ -104,7 +104,7 @@ def moveup(board):
     newboard = [[newboard[i][j] for i in range(len(board))] for j in range(len(board))]
     if(checkBoardEqual(board, newboard)):
         print("hit border")
-        return 0
+        pass
     else:
         printBoard(newboard)
         return(newboard)
@@ -127,7 +127,7 @@ def movedown(board):
 
     if(checkBoardEqual(board, newboard)):
         print("hit border")
-        return 0
+        pass
     else:
         printBoard(newboard)
         return(newboard)
