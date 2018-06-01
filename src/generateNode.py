@@ -32,7 +32,7 @@ def genDirectionLayer(instate):
     for func in funcs:
         newstate = copy.deepcopy(instate)
         newstate[0][layer] = func[1]
-        newstate[1] = func[0](newstate[1])
+        newstate[1] = newstate[1].func[0]()
         stack.append(newstate)
 
     ## return 4 possible states
