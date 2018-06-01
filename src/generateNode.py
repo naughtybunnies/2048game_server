@@ -29,6 +29,26 @@ def genDirectionLayer(instate):
     stack = []
     layer = instate[0].index(0)
 
+    newstate = copy.deepcopy(instate)
+    newstate[0][layer] = 'l'
+    newstate[1] = newstate[1].moveLeft()
+    stack.append(newstate)
+
+    newstate = copy.deepcopy(instate)
+    newstate[0][layer] = 'r'
+    newstate[1] = newstate[1].moveRight()
+    stack.append(newstate)
+
+    newstate = copy.deepcopy(instate)
+    newstate[0][layer] = 'u'
+    newstate[1] = newstate[1].moveUp()
+    stack.append(newstate)
+
+    newstate = copy.deepcopy(instate)
+    newstate[0][layer] = 'd'
+    newstate[1] = newstate[1].moveDown()
+    stack.append(newstate)
+    '''
     for func in funcs:
         newstate = copy.deepcopy(instate)
         newstate[0][layer] = func[1]
@@ -36,6 +56,7 @@ def genDirectionLayer(instate):
         stack.append(newstate)
 
     ## return 4 possible states
+    '''
     return stack
 
 def genChild2(inboard,i,j):
