@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from mpi4py import MPI
 import numpy
+
 comm = MPI.Comm.Get_parent()
 size = comm.Get_size()
 rank = comm.Get_rank()
