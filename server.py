@@ -2,11 +2,15 @@ from mpi4py import MPI
 from src import game2048
 from src import datastructure
 from src import generateNode
+from src import evaluation 
 
 import numpy
 import sys
 import socket
 import copy
+
+HOST = ''                 # Symbolic name meaning all available interfaces
+PORT = 50007              # Arbitrary non-privileged port
 
 def deSerializeState(size,strBoard):
     listBoard = strBoard.split(" ")
@@ -127,56 +131,92 @@ def fillBoard(board, num, actions):
                 printBoard(filledBoard)
 
 def main():
-    moves = [[moveleft,'l'], [moveright,'r'], [moveup,'u'], [movedown,'d']]
-    while 1 :
-        s.listen()
-        conn, addr = s.accept()
-        with conn:
-            print('Connected by', addr)
-            while True:
-                data = conn.recv(1024)
-                if not data: break
-                data = data.decode()
-                data = data.split(',') # data[0] is board size, data[1] is board data
-                size = int(data[0])
-                strData = data[1]
-                listBoard = deSerializeState(size, strData)
-                #print(listBoard)
-                #gameBoard.getBoard()
-                nodes = generateNode.genNodeController(listBoard, moves)
+    comm = MPI.COMM_WORLD
+    size = comm.Get_size()
+    rank = comm.Get_rank()
 
-                #print(board)
-                #data = data + "go UP"
-                #data = bytes("Welcome to my chat server", encoding='utf-8')
-                try :
-                    conn.sendall(data)
-                finally:
-                    conn.close()
+    moves = [[moveleft,'l'], [moveright,'r'], [moveup,'u'], [movedown,'d']]
+
+    nodesGenerated = False 
+    if rank == 0:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind((HOST, PORT))
+        nodes = None     
+        while 1 :
+            s.listen()
+            conn, addr = s.accept()
+            with conn:
+                print('Connected by', addr)
+                while True:
+                    data = conn.recv(1024)
+                    if not data: break
+                    print("GENERATING NODES", end=" ")
+                    data = data.decode()
+                    data = data.split(',') # data[0] is board size, data[1] is board data
+                    size = int(data[0])
+                    strData = data[1]
+                    listBoard = deSerializeState(size, strData)
+                    nodes = generateNode.genNodeController(listBoard, moves)
+                    nodesGenerated = True
+                    #data = bytes("Welcome to my chat server", encoding='utf-8')
+                    print("DONE")
+    else:
+        nodes = None
+    '''
+    # Waiting for nodes to be generated    
+    nodesGenerated = comm.bcast(nodesGenerated, root=0)
+    while not nodesGenerated :
+        print("WAITING NODES TO BE GENERATED") 
+    '''
+    # Scatter nodes to all processes
+    nodes = comm.scatter(nodes, root=0)
+
+    # Preparing data to evaluate
+    maxScore = 0
+    bestNode = None
+
+    # All processes evaluate data
+    for node in nodes :
+        print("RANK ",rank," IS EVALUATING")
+        p = evaluation.slopedBoard(node[1])
+        score = node[2]*p
+        if maxScore < score :
+            maxScore = score
+            bestNode = node
+            bestNode[2] = score
+    
+    # Master gathers evaluated data from slaves 
+    bestNodes = comm.gather(bestNode, root=0)
+   
+    if rank == 0 :
+        bestPath = [0,0,0]
+
+        for node in bestNodes :
+            if bestPath[2] < node[2] :
+                bestPath = node
+        dataTosend = bytes(bestPath[0][0], encoding='utf-8')
+        
+        try : 
+            conn.sendall(dataTosend)
+        finally:
+            conn.close()
+
 #########################################################################################################
 
-comm = MPI.COMM_WORLD
-size = comm.Get_size()
-rank = comm.Get_rank()
-
-if rank == 0:
-    print("SIZE: ",size)
-    # Socket Communication
-    HOST = ''                 # Symbolic name meaning all available interfaces
-    PORT = 50007              # Arbitrary non-privileged port
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((HOST, PORT))
+while 1 :
     main()
-'''
-if rank == 0:
-    data = [(i+1)**2 for i in range(size)]
-else:
-    data = None
-data = comm.scatter(data, root=0)
-assert data == (rank+1)**2
-
-print("RANK: ", rank)
-print("DATA: ", data)
-'''
+    '''
+    if rank == 0:
+        print("SIZE: ",size)
+        # Socket Communication
+        HOST = ''                 # Symbolic name meaning all available interfaces
+        PORT = 50007              # Arbitrary non-privileged port
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind((HOST, PORT))
+        main()
+    else:
+        nodes = None
+    '''
 
 '''
 if __name__ == "__main__" :
