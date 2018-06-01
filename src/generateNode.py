@@ -1,4 +1,5 @@
-from src import evaluation
+#from src import evaluation
+import evaluation
 import copy
 
 ## adapter : call move functions
@@ -20,6 +21,7 @@ def genNodeChildren(instate):
     node_children = []
 
     for direction in node_directionLayer:
+        print(direction)
         node_children += genAllChild(direction)
 
     ## return complete tree for 1 node
