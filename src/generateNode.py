@@ -56,7 +56,6 @@ def genDirectionLayer(instate):
         stack.append(newstate)
 
     ## return 4 possible states
-    '''
     return stack
 
 def genChild2(inboard,i,j):
