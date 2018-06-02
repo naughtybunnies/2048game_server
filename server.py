@@ -2,7 +2,7 @@ from mpi4py import MPI
 from src import game2048
 from src import datastructure
 from src import generateNode
-from src import evaluation 
+from src import evaluation
 
 import numpy
 import sys
@@ -143,7 +143,7 @@ def main():
     if rank == 0:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind((HOST, PORT))
-        nodes = None     
+        nodes = None
         while 1 :
             s.listen()
             conn, addr = s.accept()
@@ -156,11 +156,11 @@ def main():
                     data = data.split(',') # data[0] is board size, data[1] is board data
                     size = int(data[0])
                     strData = data[1]
-                    print("DESERIALIZING")
+                    print("DESERIALIZING",end=" ")
                     listBoard = deSerializeState(size, strData)
                     print("DONE")
 
-                    print("GENERATING NODES")
+                    print("GENERATING NODES",end=" ")
                     #print(listBoard)
                     #gameBoard.getBoard()
                     nodes = generateNode.genNodeController(listBoard, moves)
@@ -171,7 +171,7 @@ def main():
                     #print(board)
                     #data = data + "go UP"
                     #data = bytes("Welcome to my chat server", encoding='utf-8')
-                    '''   
+                    '''
                     try :
                         conn.sendall(data)
                     finally:
@@ -180,16 +180,21 @@ def main():
                 #endwhile
             print("nodesGenerated: ",nodesGenerated)
             if nodesGenerated: break
-        #endwhile 
+        #endwhile
     #endif
     else:
         nodes = None
-    
-    print("RANK ",rank," REACHED BARRIER") 
-    comm.Barrier()
 
-    nodes = comm.scatter(nodes, root=0)
-    
+    #print("RANK ",rank," REACHED BARRIER")
+    comm.Barrier()
+    splitNodes = [nodes[i::size] for i in range(size)]
+    print("SPLIT NODES SIZE:",len(splitNodes))
+    for i,splitNode in enumerate(splitNodes):
+        print("SPLIT NODE 1:",i,"LENGTH:",len(splitNode))
+        for j,row in enumerate(splitNode):
+            print(row)
+    nodes = comm.scatter(splitNodes, root=0)
+
     if nodes is not None:
         maxScore = 0
         bestNode = None
@@ -220,7 +225,7 @@ def main():
             if bestNode[2] < node[2]:
                 bestNode = node
         dataTosend = bytes(bestNode[0][0], encoding='utf-8')
-        try : 
+        try :
             conn.sendall(dataTosend)
         finally:
             conn.close()
