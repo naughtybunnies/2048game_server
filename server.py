@@ -222,7 +222,9 @@ def main():
         bestNodes = []
         for p in range(size):
             bestNodes.append(comm.irecv(source=p, tag=1))
-
+        print("BEST NODES LIST")
+        for n in bestNodes:
+            print(n)
         for node in bestNodes :
             if bestNode[2] < node[2]:
                 bestNode = node
