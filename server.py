@@ -216,14 +216,10 @@ def main():
         comm.send(bestNode, dest=0, tag=1)
     #endif
 
+    bestNodes = comm.gather(bestNode, root=0)
 
     if rank == 0 :
         bestNode = [0,0,0]
-        bestNodes = []
-        for p in range(size):
-            recvNode = comm.recv(source=p, tag=1)
-            print("RECEIVED :",recvNode)
-            bestNodes.append(recvNode)
         print("BEST NODES LIST")
         for n in bestNodes:
             print(n)
