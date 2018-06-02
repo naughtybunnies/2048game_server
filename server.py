@@ -156,17 +156,18 @@ def main():
                     data = data.split(',') # data[0] is board size, data[1] is board data
                     size = int(data[0])
                     strData = data[1]
-                    print("DESERIALIZING",end=" ")
+                    print("DESERIALIZING")
                     listBoard = deSerializeState(size, strData)
                     print("DONE")
 
-                    print("GENERATING NODES", end=" ")
+                    print("GENERATING NODES")
                     #print(listBoard)
                     #gameBoard.getBoard()
                     nodes = generateNode.genNodeController(listBoard, moves)
                     nodesGenerated = True
                     print("DONE")
                     break
+
                     #print(board)
                     #data = data + "go UP"
                     #data = bytes("Welcome to my chat server", encoding='utf-8')
@@ -184,7 +185,7 @@ def main():
     else:
         nodes = None
     
-    
+    print("RANK ",rank," REACHED BARRIER") 
     comm.Barrier()
 
     nodes = comm.scatter(nodes, root=0)
@@ -192,8 +193,8 @@ def main():
     if nodes is not None:
         maxScore = 0
         bestNode = None
-        print("RANK ",rank," HAS ",len(nodes), " NODES")
-        print("RANK ",rank," IS EVALUATING", end=" ")
+        print("RANK",rank,"HAS",len(nodes),"NODES")
+        print("RANK",rank,"IS EVALUATING")
         for node in nodes :
             p = evaluation.slopedBoard(node[1])
             score = node[2]*p
@@ -203,7 +204,7 @@ def main():
                 bestNode[2] = score
             #endif
         #endfor
-        print("DONE")
+        print("RANK",rank,"DONE")
         comm.Barrier()
         comm.isend(bestNode, dest=0, tag=1)
     #endif
