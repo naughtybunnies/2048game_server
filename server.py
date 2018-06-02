@@ -231,7 +231,7 @@ def main():
         print(bestNode)
         nextMove = bestNode[0][0]
         print("NEXT MOVE: ",nextMove)
-        dataTosend = nextMove
+        dataTosend = bytes(nextMove, encoding="utf-8")
         #dataTosend = bytes(bestNode[0][0], encoding='utf-8')
         try :
             conn.sendall(dataTosend)
