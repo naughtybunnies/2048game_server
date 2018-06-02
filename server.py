@@ -185,14 +185,14 @@ def main():
         nodes = None
     
     
-    comm.barrier()
+    comm.Barrier()
 
     nodes = comm.scatter(nodes, root=0)
     
-    if node is not None:
+    if nodes is not None:
         maxScore = 0
         bestNode = None
-        print("RANK ",rank," HAS ",len(nodes))
+        print("RANK ",rank," HAS ",len(nodes), " NODES")
         print("RANK ",rank," IS EVALUATING", end=" ")
         for node in nodes :
             p = evaluation.slopedBoard(node[1])
@@ -204,13 +204,15 @@ def main():
             #endif
         #endfor
         print("DONE")
+        comm.Barrier()
         comm.isend(bestNode, dest=0, tag=1)
     #endif
+
 
     if rank == 0 :
         bestNode = [0,0,0]
         bestNodes = []
-        for p in range(1,size):
+        for p in range(size):
             bestNodes.append(comm.irecv(source=p, tag=1))
 
         for node in bestNodes :
