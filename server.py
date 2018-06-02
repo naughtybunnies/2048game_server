@@ -12,6 +12,10 @@ import copy
 HOST = ''                 # Symbolic name meaning all available interfaces
 PORT = 50007              # Arbitrary non-privileged port
 
+comm = MPI.COMM_WORLD
+size = comm.Get_size()
+rank = comm.Get_rank()
+
 def deSerializeState(size,strBoard):
     listBoard = strBoard.split(" ")
     rows = []
@@ -131,13 +135,11 @@ def fillBoard(board, num, actions):
                 printBoard(filledBoard)
 
 def main():
-    comm = MPI.COMM_WORLD
-    size = comm.Get_size()
-    rank = comm.Get_rank()
 
     moves = [[moveleft,'l'], [moveright,'r'], [moveup,'u'], [movedown,'d']]
 
-    nodesGenerated = False 
+    nodesGenerated = False
+
     if rank == 0:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind((HOST, PORT))
@@ -150,52 +152,71 @@ def main():
                 while True:
                     data = conn.recv(1024)
                     if not data: break
-                    print("GENERATING NODES", end=" ")
                     data = data.decode()
                     data = data.split(',') # data[0] is board size, data[1] is board data
                     size = int(data[0])
                     strData = data[1]
+                    print("DESERIALIZING",end=" ")
                     listBoard = deSerializeState(size, strData)
+                    print("DONE")
+
+                    print("GENERATING NODES", end=" ")
+                    #print(listBoard)
+                    #gameBoard.getBoard()
                     nodes = generateNode.genNodeController(listBoard, moves)
                     nodesGenerated = True
-                    #data = bytes("Welcome to my chat server", encoding='utf-8')
                     print("DONE")
+                    break
+                    #print(board)
+                    #data = data + "go UP"
+                    #data = bytes("Welcome to my chat server", encoding='utf-8')
+                    '''   
+                    try :
+                        conn.sendall(data)
+                    finally:
+                        conn.close()
+                    '''
+                #endwhile
+            print("nodesGenerated: ",nodesGenerated)
+            if nodesGenerated: break
+        #endwhile 
+    #endif
     else:
         nodes = None
-    '''
-    # Waiting for nodes to be generated    
-    nodesGenerated = comm.bcast(nodesGenerated, root=0)
-    while not nodesGenerated :
-        print("WAITING NODES TO BE GENERATED") 
-    '''
-    # Scatter nodes to all processes
-    nodes = comm.scatter(nodes, root=0)
-
-    # Preparing data to evaluate
-    maxScore = 0
-    bestNode = None
-
-    # All processes evaluate data
-    for node in nodes :
-        print("RANK ",rank," IS EVALUATING")
-        p = evaluation.slopedBoard(node[1])
-        score = node[2]*p
-        if maxScore < score :
-            maxScore = score
-            bestNode = node
-            bestNode[2] = score
     
-    # Master gathers evaluated data from slaves 
-    bestNodes = comm.gather(bestNode, root=0)
-   
+    
+    comm.barrier()
+
+    nodes = comm.scatter(nodes, root=0)
+    
+    if node is not None:
+        maxScore = 0
+        bestNode = None
+        print("RANK ",rank," HAS ",len(nodes))
+        print("RANK ",rank," IS EVALUATING", end=" ")
+        for node in nodes :
+            p = evaluation.slopedBoard(node[1])
+            score = node[2]*p
+            if maxScore < score :
+                maxScore = score
+                bestNode = node
+                bestNode[2] = score
+            #endif
+        #endfor
+        print("DONE")
+        comm.isend(bestNode, dest=0, tag=1)
+    #endif
+
     if rank == 0 :
-        bestPath = [0,0,0]
+        bestNode = [0,0,0]
+        bestNodes = []
+        for p in range(1,size):
+            bestNodes.append(comm.irecv(source=p, tag=1))
 
         for node in bestNodes :
-            if bestPath[2] < node[2] :
-                bestPath = node
-        dataTosend = bytes(bestPath[0][0], encoding='utf-8')
-        
+            if bestNode[2] < node[2]:
+                bestNode = node
+        dataTosend = bytes(bestNode[0][0], encoding='utf-8')
         try : 
             conn.sendall(dataTosend)
         finally:
