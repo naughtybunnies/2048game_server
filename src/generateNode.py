@@ -92,7 +92,6 @@ def genNodeController(board, funcArray):
     state1 = createState(board)
     layer1 = genNodeChildren(state1)
     #print("LAYER 1:",len(layer1))
-    '''
     layer2 = []
     for leaf in layer1:
         layer2 += genNodeChildren(leaf)
@@ -102,8 +101,7 @@ def genNodeController(board, funcArray):
         layer3 += genNodeChildren(leaf)
     #print("LAYER 3:",len(layer3))
     return layer3
-    '''
-    return layer1
+
 if (__name__ == '__main__'):
     request = [[2,4,4,2], [2,2,4,2], [0,0,0,0], [0,0,0,0]]
     funcs = [[moveleft,'l'], [moveright,'r'], [moveup,'u'], [movedown,'d']]

@@ -142,42 +142,33 @@ def main():
 
     if rank == 0:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
         s.bind((HOST, PORT))
         nodes = None
         while 1 :
             s.listen()
             conn, addr = s.accept()
-            with conn:
-                print('Connected by', addr)
-                while True:
-                    data = conn.recv(1024)
-                    if not data: break
-                    data = data.decode()
-                    data = data.split(',') # data[0] is board size, data[1] is board data
-                    size = int(data[0])
-                    strData = data[1]
-                    print("DESERIALIZING",end=" ")
-                    listBoard = deSerializeState(size, strData)
-                    print("DONE")
+            #with conn:
+            print('Connected by', addr)
+            while True:
+                data = conn.recv(1024)
+                if not data: break
+                data = data.decode()
+                data = data.split(',') # data[0] is board size, data[1] is board data
+                size = int(data[0])
+                strData = data[1]
+                print("DESERIALIZING",end=" ")
+                listBoard = deSerializeState(size, strData)
+                print("DONE")
 
-                    print("GENERATING NODES",end=" ")
-                    #print(listBoard)
-                    #gameBoard.getBoard()
-                    nodes = generateNode.genNodeController(listBoard, moves)
-                    nodesGenerated = True
-                    print("DONE")
-                    break
-
-                    #print(board)
-                    #data = data + "go UP"
-                    #data = bytes("Welcome to my chat server", encoding='utf-8')
-                    '''
-                    try :
-                        conn.sendall(data)
-                    finally:
-                        conn.close()
-                    '''
-                #endwhile
+                print("GENERATING NODES",end=" ")
+                #print(listBoard)
+                #gameBoard.getBoard()
+                nodes = generateNode.genNodeController(listBoard, moves)
+                nodesGenerated = True
+                print("DONE")
+                break
+            #endwhile
             print("nodesGenerated: ",nodesGenerated)
             if nodesGenerated: break
         #endwhile
@@ -186,13 +177,13 @@ def main():
         nodes = None
         splitNodes = None
     if rank == 0:
+        size = comm.Get_size()
         splitNodes = [nodes[i::size] for i in range(size)]
-        print("SPLIT NODES SIZE:",len(splitNodes))
+    ''' 
         for i,splitNode in enumerate(splitNodes):
-            print("SPLIT NODE ",i,"LENGTH:",len(splitNode))
             for j,row in enumerate(splitNode):
                 print(row)
-
+    '''
     #print("RANK ",rank," REACHED BARRIER")
     comm.Barrier()
     nodes = comm.scatter(splitNodes, root=0)
@@ -220,61 +211,25 @@ def main():
 
     if rank == 0 :
         bestNode = [0,0,0]
-        print("BEST NODES LIST")
+        #print("BEST NODES LIST")
         for n in bestNodes:
             print(n)
 
         for node in bestNodes :
             if bestNode[2] < node[2]:
                 bestNode = node
-        print("BEST NODE")
-        print(bestNode)
+        #print("BEST NODE")
+        #print(bestNode)
         nextMove = bestNode[0][0]
-        print("NEXT MOVE: ",nextMove)
+        #print("NEXT MOVE: ",nextMove)
         dataTosend = bytes(nextMove, encoding="utf-8")
         #dataTosend = bytes(bestNode[0][0], encoding='utf-8')
-        try :
-            conn.sendall(str(dataTosend))
-        finally:
-            conn.close()
+        conn.send(dataTosend)
+        conn.close()
+    #endif
 
 #########################################################################################################
 
 while 1 :
     main()
-    '''
-    if rank == 0:
-        print("SIZE: ",size)
-        # Socket Communication
-        HOST = ''                 # Symbolic name meaning all available interfaces
-        PORT = 50007              # Arbitrary non-privileged port
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind((HOST, PORT))
-        main()
-    else:
-        nodes = None
-    '''
 
-'''
-if __name__ == "__main__" :
-    # Socket Communication
-    HOST = ''                 # Symbolic name meaning all available interfaces
-    PORT = 50007              # Arbitrary non-privileged port
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((HOST, PORT))
-    main()
-'''
-
-'''
-    comm =  MPI.COMM_SELF.Spawn(
-                sys.executable,
-                args=['py_slave.py'],
-                maxprocs=5
-            )
-    N = numpy.array(100, 'i')
-    comm.Bcast([N, MPI.INT], root=MPI.ROOT)
-    PI = numpy.array(0.0, 'd')
-    comm.Reduce(None, [PI, MPI.DOUBLE], op=MPI.SUM, root=MPI.ROOT)
-    print(PI)
-    comm.Disconnect()
-'''
