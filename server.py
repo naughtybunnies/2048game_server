@@ -234,7 +234,7 @@ def main():
         dataTosend = bytes(nextMove, encoding="utf-8")
         #dataTosend = bytes(bestNode[0][0], encoding='utf-8')
         try :
-            conn.sendall(dataTosend)
+            conn.sendall(str(dataTosend))
         finally:
             conn.close()
 
