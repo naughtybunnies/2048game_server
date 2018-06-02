@@ -213,7 +213,7 @@ def main():
         #endfor
         print("RANK",rank,"DONE")
         comm.Barrier()
-        comm.isend(bestNode, dest=0, tag=1)
+        comm.send(bestNode, dest=0, tag=1)
     #endif
 
 
@@ -221,7 +221,9 @@ def main():
         bestNode = [0,0,0]
         bestNodes = []
         for p in range(size):
-            bestNodes.append(comm.irecv(source=p, tag=1))
+            recvNode = comm.recv(source=p, tag=1)
+            print("RECEIVED :",recvNode)
+            bestNodes.append(recvNode)
         print("BEST NODES LIST")
         for n in bestNodes:
             print(n)
