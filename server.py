@@ -184,15 +184,17 @@ def main():
     #endif
     else:
         nodes = None
+        splitNodes = None
+    if rank == 0:
+        splitNodes = [nodes[i::size] for i in range(size)]
+        print("SPLIT NODES SIZE:",len(splitNodes))
+        for i,splitNode in enumerate(splitNodes):
+            print("SPLIT NODE ",i,"LENGTH:",len(splitNode))
+            for j,row in enumerate(splitNode):
+                print(row)
 
     #print("RANK ",rank," REACHED BARRIER")
     comm.Barrier()
-    splitNodes = [nodes[i::size] for i in range(size)]
-    print("SPLIT NODES SIZE:",len(splitNodes))
-    for i,splitNode in enumerate(splitNodes):
-        print("SPLIT NODE 1:",i,"LENGTH:",len(splitNode))
-        for j,row in enumerate(splitNode):
-            print(row)
     nodes = comm.scatter(splitNodes, root=0)
 
     if nodes is not None:
