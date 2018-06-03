@@ -179,8 +179,8 @@ def main():
     else:
         nodes = None
         splitNodes = None
-    print("PROCESS SIZE",psize)
-    if rank == 0:
+    print("PROCESS SIZE",pSize)
+    if rank == 0 and nodes is not None:
         splitNodes = [nodes[i::pSize] for i in range(pSize)]
     '''
         for i,splitNode in enumerate(splitNodes):
