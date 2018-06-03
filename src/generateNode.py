@@ -1,7 +1,8 @@
 from src import evaluation
 #import evaluation
 import copy
-
+countNodes = 0
+maxNodes = 50000
 ## adapter : call move functions
 def moveleft(state):
     return state
@@ -16,6 +17,8 @@ def movedown(state):
     return state
 
 def genNodeChildren(instate):
+    global countNodes
+    countNodes = countNodes+1
     ## create childrens for 1 node
     node_directionLayer = genDirectionLayer(instate)
     node_children = []
@@ -87,6 +90,8 @@ def linearPlay(possibilityTree):
 
 def genNodeController(board, funcArray):
     global funcs
+    global countNodes
+
     funcs = funcArray
 
     state1 = createState(board)
@@ -95,12 +100,15 @@ def genNodeController(board, funcArray):
     layer2 = []
     for leaf in layer1:
         layer2 += genNodeChildren(leaf)
+        if countNodes >= maxNodes:
+            return layer2
     #print("LAYER 2:",len(layer2))
     layer3 = []
     for leaf in layer2:
         layer3 += genNodeChildren(leaf)
+        if countNodes >= maxNodes:
+            return layer3
     #print("LAYER 3:",len(layer3))
-    return layer3
 
 if (__name__ == '__main__'):
     request = [[2,4,4,2], [2,2,4,2], [0,0,0,0], [0,0,0,0]]

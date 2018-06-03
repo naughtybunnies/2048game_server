@@ -1,4 +1,5 @@
 from mpi4py import MPI
+from time import time
 from src import game2048
 from src import datastructure
 from src import generateNode
@@ -153,6 +154,7 @@ def main():
             while True:
                 data = conn.recv(1024)
                 if not data: break
+                recvTime = time()
                 data = data.decode()
                 data = data.split(',') # data[0] is board size, data[1] is board data
                 size = int(data[0])
@@ -165,11 +167,12 @@ def main():
                 #print(listBoard)
                 #gameBoard.getBoard()
                 nodes = generateNode.genNodeController(listBoard, moves)
+                genNodeTime = time()
                 nodesGenerated = True
                 print("DONE")
                 break
             #endwhile
-            print("nodesGenerated: ",nodesGenerated)
+            #print("nodesGenerated: ",nodesGenerated)
             if nodesGenerated: break
         #endwhile
     #endif
@@ -179,20 +182,19 @@ def main():
     if rank == 0:
         size = comm.Get_size()
         splitNodes = [nodes[i::size] for i in range(size)]
-    ''' 
+    '''
         for i,splitNode in enumerate(splitNodes):
             for j,row in enumerate(splitNode):
                 print(row)
     '''
-    #print("RANK ",rank," REACHED BARRIER")
     comm.Barrier()
     nodes = comm.scatter(splitNodes, root=0)
 
     if nodes is not None:
         maxScore = 0
         bestNode = None
-        print("RANK",rank,"HAS",len(nodes),"NODES")
-        print("RANK",rank,"IS EVALUATING")
+        #print("RANK",rank,"HAS",len(nodes),"NODES")
+        #print("RANK",rank,"IS EVALUATING")
         for node in nodes :
             p = evaluation.slopedBoard(node[1])
             score = node[2]*p
@@ -202,7 +204,7 @@ def main():
                 bestNode[2] = score
             #endif
         #endfor
-        print("RANK",rank,"DONE")
+        #print("RANK",rank,"DONE")
         comm.Barrier()
         comm.send(bestNode, dest=0, tag=1)
     #endif
@@ -226,6 +228,8 @@ def main():
         #dataTosend = bytes(bestNode[0][0], encoding='utf-8')
         conn.send(dataTosend)
         conn.close()
+        replyTime = time()
+        print("genNodeTime - recvTime", genNodeTime-recvTime, " replyTime - recvTime", replyTime-recvTime)
     #endif
 
 #########################################################################################################
