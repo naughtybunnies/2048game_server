@@ -14,7 +14,7 @@ HOST = ''                 # Symbolic name meaning all available interfaces
 PORT = 50007              # Arbitrary non-privileged port
 
 comm = MPI.COMM_WORLD
-size = comm.Get_size()
+pSize = comm.Get_size()
 rank = comm.Get_rank()
 
 def deSerializeState(size,strBoard):
@@ -180,8 +180,7 @@ def main():
         nodes = None
         splitNodes = None
     if rank == 0:
-        size = comm.Get_size()
-        splitNodes = [nodes[i::size] for i in range(size)]
+        splitNodes = [nodes[i::pSize] for i in range(pSize)]
     '''
         for i,splitNode in enumerate(splitNodes):
             for j,row in enumerate(splitNode):
