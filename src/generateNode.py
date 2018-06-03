@@ -109,7 +109,7 @@ def genNodeController(board, funcArray):
         if countNodes >= maxNodes:
             return layer3
     #print("LAYER 3:",len(layer3))
-
+    return layer3
 if (__name__ == '__main__'):
     request = [[2,4,4,2], [2,2,4,2], [0,0,0,0], [0,0,0,0]]
     funcs = [[moveleft,'l'], [moveright,'r'], [moveup,'u'], [movedown,'d']]
