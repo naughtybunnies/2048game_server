@@ -91,7 +91,8 @@ def linearPlay(possibilityTree):
 def genNodeController(board, funcArray):
     global funcs
     global countNodes
-
+    global maxNodes
+    
     funcs = funcArray
 
     state1 = createState(board)
