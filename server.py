@@ -213,9 +213,10 @@ def main():
     if rank == 0 :
         bestNode = [0,0,0]
         #print("BEST NODES LIST")
+        '''
         for n in bestNodes:
             print(n)
-
+        '''
         for node in bestNodes :
             if bestNode[2] < node[2]:
                 bestNode = node
