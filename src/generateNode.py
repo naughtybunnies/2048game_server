@@ -2,7 +2,7 @@ from src import evaluation
 #import evaluation
 import copy
 countNodes = 0
-maxNodes = 50000
+maxNodes = 800000
 ## adapter : call move functions
 def moveleft(state):
     return state
@@ -96,20 +96,26 @@ def genNodeController(board, funcArray):
 
     state1 = createState(board)
     layer1 = genNodeChildren(state1)
+    if countNodes >= maxNodes:
+        print("REACH MAXIMUM")
+        return layer1
     #print("LAYER 1:",len(layer1))
     layer2 = []
     for leaf in layer1:
         layer2 += genNodeChildren(leaf)
         if countNodes >= maxNodes:
+            print("REACH MAXIMUM")
             return layer2
     #print("LAYER 2:",len(layer2))
     layer3 = []
     for leaf in layer2:
         layer3 += genNodeChildren(leaf)
         if countNodes >= maxNodes:
+            print("REACH MAXIMUM")
             return layer3
     #print("LAYER 3:",len(layer3))
     return layer3
+
 if (__name__ == '__main__'):
     request = [[2,4,4,2], [2,2,4,2], [0,0,0,0], [0,0,0,0]]
     funcs = [[moveleft,'l'], [moveright,'r'], [moveup,'u'], [movedown,'d']]
